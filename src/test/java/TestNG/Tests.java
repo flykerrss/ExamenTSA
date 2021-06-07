@@ -1,5 +1,6 @@
 package TestNG;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -24,7 +25,26 @@ public class Tests {
         driver.get(baseUrl);
 
     }
-
+    @Test
+    public void RegisterWithRandomUserTest(){
+        String newUserName = "username" + RandomStringUtils.randomAlphabetic(2);
+        String loginEMailText = "mail+"+ RandomStringUtils.randomNumeric(3) + "@gmail.com";
+        String userPass = RandomStringUtils.randomAlphanumeric(6);
+        driver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
+        WebElement loginElement = driver.findElement(By.xpath("//div[@class=\"login__title\"]"));
+        Assert.assertTrue(loginElement.isDisplayed());
+        WebElement loginEMail = driver.findElement(By.xpath("//div/input[@name=\"email\"]"));
+        loginEMail.sendKeys(loginEMailText);
+        WebElement usernameInput = driver.findElement(By.xpath("//input[@name='login']"));
+        usernameInput.sendKeys(newUserName);
+        WebElement passwordInput = driver.findElement(By.xpath("//input[@name='password']"));
+        passwordInput.sendKeys(userPass);
+        WebElement rulesCheckbox = driver.findElement(By.xpath("//input[@id='agree-rules']"));
+        rulesCheckbox.isSelected();
+        rulesCheckbox.click();
+        WebElement button = driver.findElement(By.xpath("//button[@type='submit']"));
+        button.click();
+    }
 
     @Test
     public void LoginWithDefaultUserTest(){
@@ -37,18 +57,16 @@ public class Tests {
         WebElement button = driver.findElement(By.xpath("//button[@type='submit']"));
         button.click();
 
+        //logout
         driver.get(baseUrl);
-        WebElement loginElement1= driver.findElement(By.xpath("//div[@class=\"login__title\"]"));
-        Assert.assertTrue(loginElement1.isDisplayed());
         WebElement loginElement2= driver.findElement(By.xpath("//a[text()='Выйти из аккаунта']"));
         loginElement2.click();
-        //add check, //add logout
     }
 
 
     @AfterMethod
     public void afterMethods(){
-//        driver.close();
-//        driver.quit();
+        driver.close();
+        driver.quit();
     }
 }
